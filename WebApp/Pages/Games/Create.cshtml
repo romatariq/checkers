@@ -1,0 +1,153 @@
+@page
+@using Domain
+@model WebApp.Pages_Games.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Game</h4>
+<hr />
+
+<form method="post">
+<div class="create-game-page">
+    <div>
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Game.Name" class="control-label"></label>
+                <input asp-for="Game.Name" class="form-control" />
+                <span asp-validation-for="Game.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Player 1 name</label>
+                <input asp-for="Game.Player1Name" class="form-control" />
+                <span asp-validation-for="Game.Player1Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Player 1 type</label>
+                <select asp-for="Game.Player1Type" class="form-select" asp-items="Html.GetEnumSelectList<EPlayerType>()"></select>
+                <span asp-validation-for="Game.Player1Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Player 2 name</label>
+                <input asp-for="Game.Player2Name" class="form-control" />
+                <span asp-validation-for="Game.Player2Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Player 2 type</label>
+                <select asp-for="Game.Player2Type" class="form-select" asp-items="Html.GetEnumSelectList<EPlayerType>()"></select>
+                <span asp-validation-for="Game.Player2Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Game setting</label>
+                <select asp-for="Game.GameSettingId" class ="form-select" asp-items="Model.SettingsSelectList"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </div>
+    </div>
+        
+    <div>
+        <div class="col-md-8">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group form-check form-switch">
+                <input class="form-check-input" asp-for="SelectedSettingMethod" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Use new settings</label>
+            </div>
+            <div class="form-group possibly-hidden">
+                <label asp-for="GameSetting.Name" class="control-label"></label>
+                <input asp-for="GameSetting.Name" class="form-control" id="new-settings-name"/>
+                <span asp-validation-for="GameSetting.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group possibly-hidden popup-header">
+                <span class="popup-text">&nbsp; Even width is highly recommended!</span>
+                <label class="control-label">Board width</label>
+                <input asp-for="GameSetting.BoardWidth" class="form-control" id="new-settings-width"/>
+                <span asp-validation-for="GameSetting.BoardWidth" class="text-danger"></span>
+            </div>
+            <div class="form-group possibly-hidden popup-header">
+                <span class="popup-text">&nbsp; Even height is highly recommended!</span>
+                <label class="control-label">Board height</label>
+                <input asp-for="GameSetting.BoardHeight" class="form-control" id="new-settings-height"/>
+                <span asp-validation-for="GameSetting.BoardHeight" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check form-switch possibly-hidden">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.HasToCapture" /> Have to capture if possible
+                </label>
+            </div>
+            <div class="form-group form-check form-switch possibly-hidden">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.CanEatBackwards" /> Can capture backwards
+                </label>
+            </div>
+            <div class="form-group form-check form-switch possibly-hidden">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.WhiteStarts" /> White starts
+                </label>
+            </div>
+            <div class="form-group form-check form-switch possibly-hidden">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.KingCanMoveOnlyOneStep" /> King step length is regular
+                </label>
+            </div>
+            <div class="form-group form-check form-switch possibly-hidden">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.AllButtonCanEatKing" /> All buttons can capture king
+                </label>
+            </div>
+        </div>
+    </div>
+
+</div>
+</form>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script>
+        let name = document.querySelector("#new-settings-name");
+        let width = document.querySelector("#new-settings-width");
+        let height = document.querySelector("#new-settings-height");
+        fillNewSettingsFields();
+        
+        function fillNewSettingsFields(){
+            name.value = "using existing settings";
+            width.value = 8;
+            height.value = 8;
+            
+            for (const element of document.querySelectorAll('.possibly-hidden')) {
+                                console.log(element);
+                element.style.visibility = 'hidden';
+            }
+        }
+        
+        function emptyNewSettingsFields(){
+            name.value = "";
+            width.value = "";
+            height.value = "";
+            for (const element of document.querySelectorAll('.possibly-hidden')) {
+                console.log(element);
+              element.style.visibility = 'visible';
+            }
+        }
+
+        $('#flexSwitchCheckDefault').on('change', function() {
+            if ($(this).is(':checked')) {
+                emptyNewSettingsFields();
+            } else {
+                fillNewSettingsFields();
+            }
+        });
+    
+    </script>
+}

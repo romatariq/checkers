@@ -1,0 +1,62 @@
+@page
+@model WebApp.Pages_GameStates.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.GameState[0].Game)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GameState[0].CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GameState[0].EndedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GameState[0].CurrentPlayer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GameState[0].StartFromX)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GameState[0].StartFromY)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.GameState) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Game!.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrentPlayer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartFromX)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartFromY)
+            </td>
+            <td>
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

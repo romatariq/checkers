@@ -1,0 +1,62 @@
+@page
+@model WebApp.Pages_GameSettings.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>GameSetting</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="GameSetting.Id" />
+            <input type="hidden" asp-for="GameSetting.BoardHeight" />
+            <input type="hidden" asp-for="GameSetting.BoardWidth" />
+            <div class="form-group">
+                <label asp-for="GameSetting.Name" class="control-label"></label>
+                <input asp-for="GameSetting.Name" class="form-control" />
+                <span asp-validation-for="GameSetting.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.HasToCapture" /> @Html.DisplayNameFor(model => model.GameSetting.HasToCapture)
+                </label>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.CanEatBackwards" /> @Html.DisplayNameFor(model => model.GameSetting.CanEatBackwards)
+                </label>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.WhiteStarts" /> @Html.DisplayNameFor(model => model.GameSetting.WhiteStarts)
+                </label>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.KingCanMoveOnlyOneStep" /> @Html.DisplayNameFor(model => model.GameSetting.KingCanMoveOnlyOneStep)
+                </label>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.AllButtonCanEatKing" /> @Html.DisplayNameFor(model => model.GameSetting.AllButtonCanEatKing)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,61 @@
+@page
+@model WebApp.Pages_GameSettings.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Game Setting details</h1>
+
+<div>
+    <h4>@Model.GameSetting.Name</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            Board width
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GameSetting.BoardWidth)
+        </dd>
+        <dt class="col-sm-3">
+            Board height
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GameSetting.BoardHeight)
+        </dd>
+        <dt class="col-sm-3">
+            Have to capture if possible
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GameSetting.HasToCapture)
+        </dd>
+        <dt class="col-sm-3">
+            Can capture backwards
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GameSetting.CanEatBackwards)
+        </dd>
+        <dt class="col-sm-3">
+            White starts
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GameSetting.WhiteStarts)
+        </dd>
+        <dt class="col-sm-3">
+            King step length is regular
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GameSetting.KingCanMoveOnlyOneStep)
+        </dd>
+        <dt class="col-sm-3">
+            All buttons can capture king
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GameSetting.AllButtonCanEatKing)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Index">Back to List</a> |
+    <a asp-page="./Edit" asp-route-id="@Model.GameSetting.Id">Edit</a>
+</div>

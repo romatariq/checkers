@@ -1,0 +1,56 @@
+@page
+@model WebApp.Pages_GameSettings.IndexModel
+
+@{
+    ViewData["Title"] = "Game settings";
+}
+
+<h1>Game settings</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<form method="get">
+    <input type="text" asp-for="Filter">
+    <input type="submit" value="Filter" class="btn btn-primary">
+</form>
+
+<br>
+<div class="d-flex flex-wrap">
+    @foreach (var item in Model.GameSetting) {
+        <div class="card card-extra border-secondary">
+            <div class="card-body">
+                <h4 class="card-title text-primary">@item.Name</h4>
+                <hr>
+                <p>@item.BoardHeight x @item.BoardWidth board</p>
+            </div>
+            <div class="card-footer">
+                <a asp-page="./Details" asp-route-id="@item.Id" class="card-link popup-header">Details
+                    <span class="popup-text">
+                        * @(item.WhiteStarts ? "White starts" : "Black starts")<br>
+                        * @(item.CanEatBackwards ? "Can capture backwards" : "Cannot capture backwards")<br>
+                        * @(item.HasToCapture ? "Always have to capture when possible" : "Capturing is not mandatory")<br>
+                        * @(item.AllButtonCanEatKing ? "All buttons can capture king" : "Only king can capture other kings")<br>
+                        * @(item.KingCanMoveOnlyOneStep ? "King's step length is 1" : "King's step length is longer")
+                    </span>
+                </a>
+                <a asp-page="./Edit" asp-route-id="@item.Id" class="card-link">Edit</a>
+                <a asp-page="./Delete" asp-route-id="@item.Id" class="card-link">Delete</a>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="page-moving-links">
+@if (Model.LastPageNr != null)
+{
+    <a asp-page="./Index" asp-route-pageNr="@Model.LastPageNr" asp-route-filter="@Model.Filter">Previous</a>
+}
+
+<span></span>
+
+@if (Model.NextPageNr != null)
+{
+    <a asp-page="./Index" asp-route-pageNr="@Model.NextPageNr" asp-route-filter="@Model.Filter">Next</a>
+}
+</div>

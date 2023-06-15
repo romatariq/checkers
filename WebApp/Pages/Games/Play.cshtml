@@ -1,0 +1,306 @@
+@page
+@using Domain
+@using GameBrain
+@model WebApp.Pages_Games.Play
+
+@{
+    var player = GetPlayer();
+    var opponent = GetOpponent();
+    var possibleFromCoordinates = Model.GameRunner.GetAllPossibleFromCoordinates();
+    ViewData["Title"] = Model.GameRunner.CurrentPlayer == player ? "Play 🟢" : "Play";
+}
+
+<h1 id="game-page-header">@GetGamePageHeaderText(player)</h1>
+
+
+<div class="game-page">
+    
+    <div>
+        <form method="get">
+            <input type="hidden" name="id" value="@Model.Game.Id">
+            <input type="hidden" name="player" value="@Model.Player">
+            <input type="hidden" name="stateId" value="@Model.StateId">
+            <select name="color" class="form-select-sm">
+                @foreach (var color in new List<string>() { "green", "purple", "brown", "blue", "black" })
+                {
+                    if (Model.Color == color) {<option selected class="select-list-@color" value="@color">@color</option>}
+                    else {<option class="select-list-@color" value="@color">@color</option>}
+                }
+            </select>
+        
+            <input type="submit" value="Set theme" class="btn btn-primary"/>
+        </form>
+        <br>
+        <br>
+        
+        @if (!IsAiVsAi())
+        {
+            var previousStateId = Model.GameRunner.GetPreviousGameStateId(player, Model.StateId);
+            var nextStateId = Model.GameRunner.GetNextGameStateId(player, Model.StateId);
+            var firstStateId = Model.GameRunner.Game.GetTheFirstState().Id;
+            var lastStateId = Model.GameRunner.Game.GetTheLastState().Id;
+
+            <a href="@($"{GetUrlCommonPart()}&stateId={previousStateId}")">Back</a>
+            <text>&nbsp;|&nbsp;</text>
+            <a href="@($"{GetUrlCommonPart()}&stateId={nextStateId}")">Next</a>
+            <br>
+            <a href="@($"{GetUrlCommonPart()}&stateId={firstStateId}")">Start</a>
+            <text>&nbsp;|&nbsp;</text>
+            <a href="@($"{GetUrlCommonPart()}&stateId={lastStateId}")">End</a>
+            <br>
+            <br>
+        }
+        
+        <span class="popup-header text-primary">Settings
+            <span class="popup-text">
+                * @(Model.Game.GameSetting!.WhiteStarts ? "White starts" : "Black starts")<br>
+                * @(Model.Game.GameSetting!.CanEatBackwards ? "Can capture backwards" : "Cannot capture backwards")<br>
+                * @(Model.Game.GameSetting!.HasToCapture ? "Always have to capture when possible" : "Capturing is not mandatory")<br>
+                * @(Model.Game.GameSetting!.AllButtonCanEatKing ? "All buttons can capture king" : "Only king can capture other kings")<br>
+                * @(Model.Game.GameSetting!.KingCanMoveOnlyOneStep ? "King's step length is 1" : "King's step length is longer")
+            </span>
+        </span>
+        
+        <br>
+        <br>
+        <a href="@($"/Games/Play?id={Model.Game.Id}&player={(Model.Player == "2" ? "1" : "2")}&color={Model.Color}&stateId={Model.StateId}")">Switch POV</a>
+    </div>
+
+    <div class="game-board" style="grid-template-columns: repeat(@(Model.GameRunner.Board.Column + 1), 65px)">
+        @for (var i = 0; i < Model.GameRunner.Board.Row; i++)
+        {
+            if (i == 0)
+            {
+                <div class="game-board-coordinate-cell"></div>
+                for (int j = 0; j < Model.GameRunner.Board.Column; j++)
+                {
+                    var letterIndex = Model.Player == "1" ? j : Model.GameRunner.Board.Row - 1 - j;
+                    <div class="game-board-coordinate-cell letter-coordinate">@CheckersBoard.Alphabet[letterIndex]</div>
+                }
+            }
+            var numberIndex = Model.Player == "1" ? Model.GameRunner.Board.Row - i : i + 1;
+            <div class="game-board-coordinate-cell number-coordinate">@numberIndex</div>
+
+            @for (var j = 0; j < Model.GameRunner.Board.Column; j++)
+            {
+                var x = Model.Player == "1" ? i : Model.GameRunner.Board.Row - 1 - i;
+                var y = Model.Player == "1" ? j : Model.GameRunner.Board.Column - 1 - j;
+                var square = Model.GameRunner.Board.Board[x][y];
+
+                <div class="game-board-cell @GetCellClass(x, y, square, possibleFromCoordinates) @GetBorderCellBorderClass(i, j)"
+                     id="cell-@x;@y"
+                     onclick="CellOnClick(@x,@y
+                            ,@System.Text.Json.JsonSerializer.Serialize(possibleFromCoordinates)
+                            ,@System.Text.Json.JsonSerializer.Serialize(Model.GameRunner.GetAllPossibleToCoordinates(new Tuple<int, int>(x, y))))">
+                    @(square.Button != null ? square.Button : "")
+                </div>
+            }
+        }
+    </div>
+
+    <div class="game-info">
+        <div class="game-info-header">You are:</div>
+        <div class="game-info-text">@(Model.Player == "1" ? "Player 1 - White" : "Player 2 - Black") - @(player.Type == EPlayerType.Human ? $"{player.Name}" : $"{GetAiWithDifficulty(player)}")</div>
+        <div class="game-info-header">Playing against:</div>
+        <div class="game-info-text">@(opponent.Type == EPlayerType.Human ? $"Human - {opponent.Name}" : GetAiWithDifficulty(opponent))</div>
+    </div>
+
+</div>
+
+
+@functions
+{
+    private string GetGamePageHeaderText(Player player)
+    {
+        if (Model.GameRunner.GameIsOver)
+        {
+            var gameWinner = Model.GameRunner.GetGameWinner();
+            if (IsAiVsAi())
+            {
+                return "Game Over! " + (gameWinner.Color == ETeamColor.White ? "White won!" : "Black won!");
+            }
+            return "Game Over! " + (gameWinner == player ? "You won!" : "You lost!");
+        }
+        if (IsAiVsAi())
+        {
+            return Model.GameRunner.CurrentPlayer.Color == ETeamColor.White ? "White's turn" : "Black's turn";
+        }
+        
+        return GetPlayer() == Model.GameRunner.CurrentPlayer ? "Your turn.." : "Waiting for opponent..";
+    }
+
+    private Player GetPlayer()
+        => Model.Player == "1" ? Model.GameRunner.Player1 : Model.GameRunner.Player2;
+
+    private Player GetOpponent()
+        => Model.Player == "1" ? Model.GameRunner.Player2 : Model.GameRunner.Player1;
+    
+    private string GetCellClass(int x, int y, BoardSquare square, List<Tuple<int, int>> possibleFromCoordinates)
+    {
+        var classes = "";
+        if (square.Color == ETeamColor.Black)
+        {
+            classes += $"dark-cell-{Model.Color}";
+        }
+        else
+        {
+            classes += $"light-cell-{Model.Color}";
+        }
+        if (!IsAiVsAi() 
+            && !IsCurrentPlayerOpponent() 
+            && possibleFromCoordinates.Contains(new Tuple<int, int>(x, y)))
+        {
+            classes += $" valid-from-cell-{Model.Color}";
+        }
+        if (square.Button?.GetType() == typeof(Button))
+        {
+            classes += square.Button.Color == ETeamColor.Black ? " dark-button" : " light-button";
+        }
+
+        return classes;
+    }
+
+    private string GetBorderCellBorderClass(int x, int y)
+    {
+        var classes = "";
+        if (x == 0)
+        {
+            classes+= "board-top-cell";
+        }        
+        if (x == Model.GameRunner.Board.Row - 1)
+        {
+            classes+= "board-bottom-cell";
+        }        
+        if (y == 0)
+        {
+            classes+= " board-left-cell";
+        }
+        if (y == Model.GameRunner.Board.Column - 1)
+        {
+            classes+= " board-right-cell";
+        }
+        return classes;
+    }
+
+    private bool IsAiVsAi()
+        => Model.Game.Player1Type != EPlayerType.Human && Model.Game.Player2Type != EPlayerType.Human;
+
+    private bool IsCurrentPlayerOpponent()
+        => Model.GameRunner.CurrentPlayer == GetOpponent();
+    
+    private bool ShouldReloadPage()
+    {
+        return !Model.GameRunner.GameIsOver;
+    }
+
+    private int GetInterval()
+    {
+        if (IsAiVsAi())
+        {
+            return 5000;
+        }
+        if (Model.Game.Player1Type != EPlayerType.Human || Model.Game.Player2Type != EPlayerType.Human)
+        {
+            return 3000;
+        }
+        return 1500;
+    }
+
+    private string GetAiWithDifficulty(Player player)
+    {
+        return player.Type switch
+        {
+            EPlayerType.VeryEasyAI => "Very easy AI",
+            EPlayerType.EasyAI => "Easy AI",
+            EPlayerType.MediumAI => "Medium AI",
+            EPlayerType.HardAI => "Hard AI",
+            _ => ""
+        };
+    }
+
+    private string GetUrlCommonPart()
+    {
+        return $"/Games/Play?id={Model.Game.Id}&player={Model.Player}&color={Model.Color}";
+    }
+}
+
+@section Scripts
+{
+    <script>
+        let interval;
+        KeepCheckOfCurrentPlayer()
+
+        function KeepCheckOfCurrentPlayer() {
+            if (!interval) {
+                interval = setInterval(ReloadPage, @GetInterval());    
+            }
+        }
+
+        async function ReloadPage() { 
+            if (@ShouldReloadPage()) {
+                    
+                let currentMostRecentStateId = @Model.CurrentMostRecentStateId; 
+                let actualMostRecentStateId = await GetTheLastState(@Model.Game.Id);
+                let shouldReload = actualMostRecentStateId !== 0 && actualMostRecentStateId !== currentMostRecentStateId;
+                
+                if (@(Model.GameRunner.CurrentPlayer.Type != EPlayerType.Human) || shouldReload) {
+                    window.location = `@GetUrlCommonPart()&stateId=${actualMostRecentStateId}`.replaceAll('&amp;', '&');
+                }
+            }                
+        }
+            
+    
+        const True = true;
+        const False = false;
+        let fromX = null;
+        let fromY = null;
+        let previousToList = []; 
+        
+        function CellOnClick(x, y, fromList, toList) {
+            if (@IsAiVsAi()) return;
+            RemoveClassFromEveryElement('valid-to-cell-@Model.Color');
+            
+            if (@(Model.GameRunner.CurrentPlayer == opponent)) {
+                window.location = `@GetUrlCommonPart()&stateId=@Model.StateId`.replaceAll('&amp;', '&');
+            }
+            
+            else if (fromX === null && fromY === null && ListContainsCoordinates(x, y, fromList)) {
+                AddClassToEveryElementInList(toList, 'valid-to-cell-@Model.Color');
+                fromX = x;
+                fromY = y;
+                
+            } else if (fromX !== null && fromY !== null && ListContainsCoordinates(x, y, previousToList)) {
+                
+                window.location = `@GetUrlCommonPart()&stateId=@Model.StateId&fromX=${fromX}&fromY=${fromY}&toX=${x}&toY=${y}`.replaceAll('&amp;', '&');
+                
+            } else {
+                fromX = null;    
+                fromY = null;    
+            }
+            previousToList = toList;
+        }
+        
+        function ListContainsCoordinates(x, y, list) {
+            return list.filter(t => t.Item1 === x && t.Item2 === y).length > 0;    
+        }
+        
+        function AddClassToEveryElementInList(list, className) {
+            for (const tuple of list) {
+                let cell = document.getElementById(`cell-${tuple.Item1};${tuple.Item2}`);
+                cell.classList.add(className);
+            }    
+        }
+        
+        function RemoveClassFromEveryElement(className) {
+             document.querySelectorAll(`.${className}`)
+                         .forEach(x => x.classList.remove(className));   
+        }
+        
+        function GetTheLastState(id) {
+            return fetch(`/Games/GameStateAPI?gameId=${id}`)
+                .then(response => response.json())
+                .then(json => json['stateId']);
+        }
+        
+    </script>
+}

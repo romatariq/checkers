@@ -1,0 +1,33 @@
+@page
+@model WebApp.Pages_Games.CreateGameLaunch
+
+<h1>Allow <b>pop-ups</b> from browser</h1>
+<h2>Redirecting in <span id="timer">4</span> seconds</h2>
+
+<a asp-page="./Play" asp-route-id="@Model.GameId" asp-route-player="1" id="player1Link"></a>
+<a asp-page="./Play" asp-route-id="@Model.GameId" asp-route-player="2" id="player2Link" target="_blank"></a>
+
+@section Scripts
+{
+    <script>
+        let player1Link = document.getElementById("player1Link");
+        let player2Link = document.getElementById("player2Link");
+        
+        setTimeout(() => {
+            player2Link.click();
+            setTimeout(() => {
+                player1Link.click();
+            }, 1000)
+        }, 5000)
+        
+        let timeLeft = 5;
+        let interval = setInterval(ChangeRedirectTimer, 1000);
+        let timer = document.querySelector("#timer");
+
+        function ChangeRedirectTimer() {
+            timeLeft--;
+            timer.innerHTML = timeLeft.toString();
+        }
+    
+    </script>
+}

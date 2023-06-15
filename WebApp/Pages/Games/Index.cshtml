@@ -1,0 +1,130 @@
+@page
+@using Domain
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model WebApp.Pages_Games.IndexModel
+
+@{
+    ViewData["Title"] = "Games";
+}
+
+<h1>Games</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<form method="get">
+    <input type="text" asp-for="Filter">
+    <input type="submit" value="Filter" class="btn btn-primary">
+</form>
+
+
+<br>
+<br>
+
+<div class="d-flex flex-wrap">
+@foreach (var item in Model.Game)
+{
+    var gameEndedAt = item.GetTheLastState().EndedAt;
+    
+    <form method="post">
+    <div class="card card-extra border-secondary">
+        <div class="card-body">
+            <img class="card-img-top" src="/images/@(GetImageName(item)).jpg" alt="player-logo"/>
+            <h4 class="card-title text-primary">@item.Name</h4>
+            <hr>
+            <p>
+                Game was started at
+                <span class="text-primary">@item.StartedAt</span><!--
+                -->@(gameEndedAt == null ? "" : " and ended at ")<!--
+                --><span class="text-danger">@gameEndedAt</span>.
+                Uses <span class="text-primary">@item.GameSetting!.BoardWidth x @item.GameSetting!.BoardHeight</span> board with
+                <a asp-page="/GameSettings/Details" asp-route-id="@item.GameSetting.Id" class="popup-header">@(item.GameSetting.Name)
+                    <span class="popup-text">
+                        * @(item.GameSetting.WhiteStarts ? "White starts" : "Black starts")<br>
+                        * @(item.GameSetting.CanEatBackwards ? "Can capture backwards" : "Cannot capture backwards")<br>
+                        * @(item.GameSetting.HasToCapture ? "Always have to capture when possible" : "Capturing is not mandatory")<br>
+                        * @(item.GameSetting.AllButtonCanEatKing ? "All buttons can capture king" : "Only king can capture other kings")<br>
+                        * @(item.GameSetting.KingCanMoveOnlyOneStep ? "King's step length is 1" : "King's step length is longer")
+                    </span>
+                </a> settings.
+                Player 1 is <span class="text-primary">@item.Player1Type</span>
+                @(item.Player1Name == "" ? "" : "named")
+                <span class="text-primary">@item.Player1Name</span>
+                and player 2 is
+                <span class="text-primary">@item.Player2Type</span><!--
+                -->@(item.Player2Name == "" ? "" : " named ")<!--
+                --><span class="text-primary">@item.Player2Name</span>.
+                So far @item.GameStates!.Count move@(item.GameStates!.Count == 1 ? " has" : "s have") been made. 
+            </p>
+        </div>
+        <div class="card-body">
+            <select asp-for="SelectedPlayer" class="form-select">
+                @if (ShouldDisplayPlayer1(item))
+                {
+                    <option value="1">Player 1</option>
+                }
+                @if (ShouldDisplayPlayer2(item))
+                {
+                    <option value="2">Player 2</option>
+                }
+            </select>
+            <select asp-for="SelectedGameStateId" class="form-select"
+                    asp-items="@(new SelectList(item.GameStates?.Reverse(), nameof(GameState.Id), nameof(GameState.CreatedAt)))">
+            </select>
+        </div>
+        <div class="card-footer">
+            <input type="hidden" asp-for="SelectedGameId" value="@item.Id"/>
+            <input type="submit" value="Play" class="btn btn-primary"/>
+            <a asp-page="./Edit" asp-route-id="@item.Id" class="card-link">Edit</a>
+            <a asp-page="./Delete" asp-route-id="@item.Id" class="card-link">Delete</a>
+        </div>
+    </div>
+    </form>
+
+}
+</div>
+<div class="page-moving-links">
+@if (Model.LastPageNr != null)
+{
+    <a asp-page="./Index" asp-route-pageNr="@Model.LastPageNr" asp-route-filter="@Model.Filter">Previous</a>
+}
+
+<span></span>
+
+@if (Model.NextPageNr != null)
+{
+    <a asp-page="./Index" asp-route-pageNr="@Model.NextPageNr" asp-route-filter="@Model.Filter">Next</a>
+}
+</div>
+
+@functions {
+
+    bool ShouldDisplayPlayer1(Game item)
+    {
+        return item.Player1Type == EPlayerType.Human || item.Player2Type != EPlayerType.Human;
+    }
+    
+    bool ShouldDisplayPlayer2(Game item)
+    {
+        return item.Player2Type == EPlayerType.Human || item.Player1Type != EPlayerType.Human;
+    }
+
+    string GetImageName(Game item)
+    {
+        var player1Type = item.Player1Type;
+        var player2Type = item.Player2Type;
+        if (player1Type == EPlayerType.Human && player2Type == EPlayerType.Human)
+        {
+            return "human-vs-human";
+        }
+        if (player1Type == EPlayerType.Human && player2Type != EPlayerType.Human)
+        {
+            return "human-vs-ai";
+        }
+        if (player1Type != EPlayerType.Human && player2Type == EPlayerType.Human)
+        {
+            return "ai-vs-human";
+        }
+        return "ai-vs-ai";
+    }
+}

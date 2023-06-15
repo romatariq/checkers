@@ -1,0 +1,71 @@
+@page
+@model WebApp.Pages_GameSettings.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Game setting</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="GameSetting.Name" class="control-label"></label>
+                <input asp-for="GameSetting.Name" class="form-control" />
+                <span asp-validation-for="GameSetting.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group popup-header">
+                <label class="control-label">Board width</label>
+                <span class="popup-text">&nbsp; Even width is highly recommended!</span>
+                <input asp-for="GameSetting.BoardWidth" class="form-control" />
+                <span asp-validation-for="GameSetting.BoardWidth" class="text-danger"></span>
+            </div>
+            <div class="form-group popup-header">
+                <span class="popup-text">&nbsp; Even height is highly recommended!</span>
+                <label class="control-label">Board height</label>
+                <input asp-for="GameSetting.BoardHeight" class="form-control"/>
+                <span asp-validation-for="GameSetting.BoardHeight" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.HasToCapture" /> Have to capture if possible
+                </label>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.CanEatBackwards" /> Can capture backwards
+                </label>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.WhiteStarts" /> White starts
+                </label>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.KingCanMoveOnlyOneStep" /> King step length is regular
+                </label>
+            </div>
+            <div class="form-group form-check form-switch">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GameSetting.AllButtonCanEatKing" /> All buttons can capture king
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

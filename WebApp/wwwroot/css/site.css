@@ -1,0 +1,270 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.game-board {
+  display: grid;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+}
+
+.create-game-page {
+  display: grid;
+  grid-template-columns: 70% 30%;
+}
+
+.game-page{
+  box-sizing: border-box;
+}
+
+.game-board-cell {
+  border: 1px black solid;
+  height: 65px;
+  width: 65px;
+  color: white;
+  text-align: center;
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.game-board-coordinate-cell {
+  color: black;
+  font-size: 22px;
+  font-weight: 300;
+}
+
+.letter-coordinate {
+  text-align: center;
+}
+
+.number-coordinate {
+  text-align: right;
+}
+
+.board-left-cell {
+  border-left: solid 4px black;
+}
+
+.board-right-cell {
+  border-right: solid 4px black;
+}
+
+.board-top-cell {
+  border-top: solid 4px black;
+}
+
+.board-bottom-cell {
+  border-bottom: solid 4px black;
+}
+
+.game-page {
+  display: flex;
+}
+
+.game-info {
+  justify-content: space-evenly;
+  font-size: 1.8em;
+  max-height: 9em;
+  padding-left: 40px;
+  padding-top: 20px;
+}
+
+.game-info-text {
+  min-width: 15em;
+  margin-bottom: 1.5em;
+}
+
+#game-page-header {
+  text-align: left;
+  padding-bottom: 30px;
+}
+
+.table-player-column {
+  width: 120px;
+}
+
+.card.card-extra {
+  width: 18rem;
+  margin-right: 30px;
+  margin-bottom: 30px;
+}
+
+.page-moving-links {
+  position: absolute;
+  bottom: 70px;
+  right: 40%;
+}
+.page-moving-links span {
+  margin-left: 150px;
+  margin-right: 150px;
+}
+
+.dark-button {
+  color: black;
+}
+
+.light-button {
+  color: white;
+  text-shadow:
+          1px 1px 0 #000,
+          1px -1px 0 #000,
+          -1px -1px 0 #000,
+          -1px 1px 0 #000
+}
+
+
+.dark-cell-green {
+  background-color: #095809;
+}
+
+.light-cell-green {
+  background-color: #f5f5bf;
+}
+
+.valid-from-cell-green {
+  background-color: #8ccd64;
+}
+
+.valid-to-cell-green {
+  background-color: cornflowerblue;
+}
+
+
+.dark-cell-purple {
+  background-color: #8877b3;
+}
+
+.light-cell-purple {
+  background-color: #ffffff;
+}
+
+.valid-from-cell-purple {
+  background-color: #4982c9;
+}
+
+.valid-to-cell-purple {
+  background-color: #7bbfe3d1;
+}
+
+
+.dark-cell-brown {
+  background-color: #b48662;
+}
+
+.light-cell-brown {
+  background-color: #eed8b4;
+}
+
+.valid-from-cell-brown {
+  background-color: #f6ea71;
+}
+
+.valid-to-cell-brown {
+  background-color: #d8c249;
+}
+
+
+.dark-cell-blue {
+  background-color: #7f9bab;
+}
+
+.light-cell-blue {
+  background-color: #d5dde3;
+}
+
+.valid-from-cell-blue {
+  background-color: #85becc;
+}
+
+.valid-to-cell-blue {
+  background-color: #abdde5;
+}
+
+
+.dark-cell-black {
+  background-color: #66625d;
+}
+
+.light-cell-black {
+  background-color: #c2bba5;
+}
+
+.valid-from-cell-black {
+  background-color: #6d97bb;
+}
+
+.valid-to-cell-black {
+  background-color: #b8c6c9;
+}
+
+
+.select-list-green {
+  background-color: #095809;
+  color: #095809;
+}
+
+.select-list-purple {
+  background-color: #8e7fb8;
+  color: #8e7fb8;
+}
+
+.select-list-brown {
+  background-color: #b48662;
+  color: #b48662;
+}
+
+.select-list-blue {
+  background-color: #7f9bab;
+  color: #7f9bab;
+}
+
+.select-list-black {
+  background-color: #66625d;
+  color: #66625d;
+}
+
+.popup-header {
+  position: relative;
+  display: inline-block;
+}
+
+.popup-header .popup-text {
+  visibility: hidden;
+  width: 300px;
+  background-color: #555;
+  color: #fff;
+  text-align: left;
+  padding: 5px 5px;
+  border-radius: 6px;
+
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -150px;
+
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+
+.popup-header:hover .popup-text {
+  visibility: visible;
+  opacity: 1;
+}

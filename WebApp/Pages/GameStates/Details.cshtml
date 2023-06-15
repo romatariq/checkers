@@ -1,0 +1,60 @@
+@page
+@model WebApp.Pages_GameStates.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>GameState</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameState.Game)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameState.Game!.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameState.CreatedAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameState.CreatedAt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameState.EndedAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameState.EndedAt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameState.CurrentPlayer)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameState.CurrentPlayer)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameState.StartFromX)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameState.StartFromX)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameState.StartFromY)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameState.StartFromY)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameState.SerializedBoard)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameState.SerializedBoard)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
