@@ -1,5 +1,7 @@
 # Checkers
 
+[Demo video](https://www.youtube.com/watch?v=S6A5avreAQk)  
+
 Users can toggle between used data storages.
 Can create, update, delete games and it's settings.
 In game settings board size, legal moves and capturing rules can be configured.
