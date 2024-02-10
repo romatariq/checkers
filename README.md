@@ -21,7 +21,7 @@ An exception is very easy AI, which chooses moves randomly.
 ## How to run
 1. Make sure you have at least .NET 7 with `dotnet --version`.
 2. Clone the repository.
-3. Navigate to the project root folder `cd checkers`.
+3. Navigate to the project's root folder.
 4. Install Entity Framework Core tools.
    1. `dotnet tool install --global dotnet-ef`
    2. `dotnet tool update --global dotnet-ef`
