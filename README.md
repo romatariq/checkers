@@ -17,3 +17,20 @@ However there isn't authentication and therefore anyone can play anyones game.
 - 2 data storing methods: SQLite and file system.
 - AI uses minimax method to choose the best move, difficulty determines the depth. 
 An exception is very easy AI, which chooses moves randomly.
+
+## How to run
+1. Make sure you have at least .NET 7 with `dotnet --version`.
+2. Clone the repository.
+3. Navigate to the project root folder `cd checkers`.
+4. Install Entity Framework Core tools.
+   1. `dotnet tool install --global dotnet-ef`
+   2. `dotnet tool update --global dotnet-ef`
+5. Run `dotnet ef database update --project DAL.Db --startup-project WebApp --context AppDbContext` to create the database.
+6. Run `dotnet run --project WebApp` to start the web app or `dotnet run --project ConsoleApp` to start the console app.
+
+~~~bash
+git clone git@github.com:romatariq/checkers.git
+cd checkers
+dotnet ef database update --project DAL.Db --startup-project WebApp --context AppDbContext
+dotnet run --project WebApp
+~~~
