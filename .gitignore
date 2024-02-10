@@ -1,6 +1,7 @@
 # Common IntelliJ Platform excludes
 
 data/
+.idea/
 
 # User specific
 **/.idea/**/workspace.xml
