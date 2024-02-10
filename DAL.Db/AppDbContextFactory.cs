@@ -6,12 +6,11 @@ namespace DAL.Db;
 
 public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
-    public static readonly string SqliteLocation = $"{Constants.SavingLocation}app.db";
 
     public AppDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlite($"Data Source={SqliteLocation}");
+        optionsBuilder.UseSqlite($"Data Source={Constants.DatabasePath}");
 
         return new AppDbContext(optionsBuilder.Options);
     }

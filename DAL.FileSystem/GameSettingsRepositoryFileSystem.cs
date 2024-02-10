@@ -6,7 +6,6 @@ namespace DAL.FileSystem;
 public class GameSettingsRepositoryFileSystem : IGameSettingsRepository
 {
     private const string FileExtension = "json";
-    private readonly string _gameModeSettingsDirectory = $"{Constants.SavingLocation}gameModes";
     private JsonSerializerOptions JsonOptions { get; set; } = new()
     {
         WriteIndented = true,
@@ -15,8 +14,6 @@ public class GameSettingsRepositoryFileSystem : IGameSettingsRepository
 
     public List<GameSetting> GetGameSettingsList(int page = 1, string? filter = null)
     {
-        CreateDirectoryIfNecessary();
-        
         return GetAllGameSettings(filter)
             .Skip(Constants.GameSettingsPerPage * (page - 1))
             .Take(Constants.GameSettingsPerPage)
@@ -37,7 +34,7 @@ public class GameSettingsRepositoryFileSystem : IGameSettingsRepository
     private IEnumerable<GameSetting> GetAllGameSettings(string? filter)
     {
         var items = Directory
-            .GetFileSystemEntries(_gameModeSettingsDirectory, $"*.{FileExtension}")
+            .GetFileSystemEntries(Constants.GameSettingsPath, $"*.{FileExtension}")
             .Select(file => Path.GetFileNameWithoutExtension(file))
             .Select(x => GetGameSettings(int.Parse(x))!);
 
@@ -78,8 +75,6 @@ public class GameSettingsRepositoryFileSystem : IGameSettingsRepository
     
     public void SaveGameSettings(GameSetting setting)
     {
-        CreateDirectoryIfNecessary();
-
         if (setting.Id == 0)
         {
             setting.Id = setting.GetHashCode();
@@ -91,8 +86,6 @@ public class GameSettingsRepositoryFileSystem : IGameSettingsRepository
 
     public Task SaveGameSettingsAsync(GameSetting setting)
     {
-        CreateDirectoryIfNecessary();
-
         if (setting.Id == 0)
         {
             setting.Id = setting.GetHashCode();
@@ -129,17 +122,10 @@ public class GameSettingsRepositoryFileSystem : IGameSettingsRepository
             .Select(x => x.GameSetting!.Id)
             .Contains(id);
     }
-
-    private void CreateDirectoryIfNecessary()
-    {
-        if (!Directory.Exists(_gameModeSettingsDirectory))
-        {
-            Directory.CreateDirectory(_gameModeSettingsDirectory);
-        }
-    }
+    
     private string GetFileNameWithPathAndExtension(string id)
     {
-        return $"{_gameModeSettingsDirectory}{Path.DirectorySeparatorChar}{id}.{FileExtension}";
+        return $"{Constants.GameSettingsPath}{Path.DirectorySeparatorChar}{id}.{FileExtension}";
     }
 
 }

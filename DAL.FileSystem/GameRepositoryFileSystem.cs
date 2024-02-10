@@ -6,7 +6,6 @@ namespace DAL.FileSystem;
 public class GameRepositoryFileSystem : IGameRepository
 {
     private const string FileExtension = "json";
-    private readonly string _gameStateDirectory = $"{Constants.SavingLocation}savedGames";
     private JsonSerializerOptions JsonOptions { get; set; } = new()
     {
         WriteIndented = true,
@@ -15,8 +14,6 @@ public class GameRepositoryFileSystem : IGameRepository
     
     public List<Game> GetSavedGamesList(int page = 1, string? filter = null)
     {
-        CreateDirectoryIfNecessary();
-
         return GetAllGames(filter)
             .Skip(Constants.GamesPerPage * (page - 1))
             .Take(Constants.GamesPerPage)
@@ -32,7 +29,7 @@ public class GameRepositoryFileSystem : IGameRepository
     private IEnumerable<Game> GetAllGames(string? filter)
     {
         var items = Directory
-            .GetFileSystemEntries(_gameStateDirectory, $"*.{FileExtension}")
+            .GetFileSystemEntries(Constants.GamesPath, $"*.{FileExtension}")
             .Select(file => Path.GetFileNameWithoutExtension(file))
             .Select(x => GetSavedGame(int.Parse(x))!);
 
@@ -93,8 +90,6 @@ public class GameRepositoryFileSystem : IGameRepository
     
     public void SaveGame(Game game)
     {
-        CreateDirectoryIfNecessary();
-        
         if (game.Id != 0 && game.GameSettingId == 0)
         {
             var gameFromFs = GetSavedGame(game.Id);
@@ -134,8 +129,6 @@ public class GameRepositoryFileSystem : IGameRepository
         
     public Task SaveGameAsync(Game game)
     {
-        CreateDirectoryIfNecessary();
-        
         if (game.Id != 0 && game.GameSettingId == 0)
         {
             var gameFromFs = GetSavedGame(game.Id);
@@ -186,16 +179,8 @@ public class GameRepositoryFileSystem : IGameRepository
     }
 
     
-    
-    private void CreateDirectoryIfNecessary()
-    {
-        if (!Directory.Exists(_gameStateDirectory))
-        {
-            Directory.CreateDirectory(_gameStateDirectory);
-        }
-    }
     private string GetFileNameWithPathAndExtension(string name)
     {
-        return $"{_gameStateDirectory}{Path.DirectorySeparatorChar}{name}.{FileExtension}";
+        return $"{Constants.GamesPath}{Path.DirectorySeparatorChar}{name}.{FileExtension}";
     }
 }

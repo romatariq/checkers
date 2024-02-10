@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 var dbOptions = new DbContextOptionsBuilder<AppDbContext>()
-    .UseSqlite($"Data Source={AppDbContextFactory.SqliteLocation}")
+    .UseSqlite($"Data Source={Constants.DatabasePath}")
     .Options;
 var ctx = new AppDbContext(dbOptions);
 

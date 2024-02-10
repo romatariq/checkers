@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-var connectionString = $"DataSource={AppDbContextFactory.SqliteLocation};Cache=Shared";
+var connectionString = $"DataSource={Constants.DatabasePath};Cache=Shared";
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -53,7 +53,7 @@ app.Run();
 void InitializeGameModeSettings()
 {
     var dbOptions = new DbContextOptionsBuilder<AppDbContext>()
-        .UseSqlite($"Data Source={AppDbContextFactory.SqliteLocation}")
+        .UseSqlite($"Data Source={Constants.DatabasePath}")
         .Options;
     var ctx = new AppDbContext(dbOptions);
 
